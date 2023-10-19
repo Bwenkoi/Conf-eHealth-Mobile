@@ -1,8 +1,8 @@
 export const patientInfo = {
   name: "Francisca Maria",
   age: "59",
-  photo: "patient03",
-  gender: "F",
+  photo: "ElderlyF",
+  gender: "Feminino",
 };
 
 export const patientData = [

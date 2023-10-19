@@ -8,6 +8,7 @@ import {
   Dimensions,
   SafeAreaView,
 } from "react-native";
+
 import { LineChart } from "react-native-chart-kit";
 import { patientInfo, patientData } from "./database/Pacient01";
 
@@ -23,9 +24,10 @@ export default function App() {
     legend: ["Batimentos por Minuto"],
   });
   const [dataExtract, setDataExtract] = useState([]);
+  const [currentValue, setCurrentValue] = useState(0);
 
   useEffect(() => {
-    //getDataFromAPI(0);
+    getDataFromAPI(0);
   }, []);
 
   function getDataFromAPI(iteration) {
@@ -47,6 +49,8 @@ export default function App() {
           legend: ["Batimentos por Minuto"],
         });
 
+        setCurrentValue(patientData[iteration]);
+
         var dataExtractAux = dataExtract;
         var dateAux = new Date();
         var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
@@ -56,13 +60,14 @@ export default function App() {
           value: patientData[iteration],
           situation: "normal",
         });
+
         setDataExtract(dataExtractAux);
 
         if (iteration < patientData.length - 1) {
           var aux = iteration + 1;
           getDataFromAPI(aux);
         } else {
-          //console.log(dataExtract);
+          console.log(dataExtract);
         }
       } else {
         arrayAux.reverse();
@@ -82,6 +87,8 @@ export default function App() {
           legend: ["Batimentos por Minuto"],
         });
 
+        setCurrentValue(patientData[iteration]);
+
         var dataExtractAux = dataExtract;
         var dateAux = new Date();
         var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
@@ -91,16 +98,17 @@ export default function App() {
           value: patientData[iteration],
           situation: "normal",
         });
+
         setDataExtract(dataExtractAux);
 
         if (iteration < patientData.length - 1) {
           var aux = iteration + 1;
           getDataFromAPI(aux);
         } else {
-          //console.log(dataExtract);
+          console.log(dataExtract);
         }
       }
-    }, 1000);
+    }, 2000);
   }
 
   const formatDate = (date) => {
@@ -131,38 +139,94 @@ export default function App() {
   };
 
   const renderListItem = (item) => {
+    if (item.situation === "normal") {
+      var situation = (
+        <View
+          style={{
+            width: 80,
+            backgroundColor: liveGreen,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: cleanWhite }}>Saudável</Text>
+        </View>
+      );
+    } else if (item.situation === "atencao") {
+      var situation = (
+        <View>
+          <Text>Atenção</Text>
+        </View>
+      );
+    } else {
+      var situation = (
+        <View>
+          <Text>Perigo</Text>
+        </View>
+      );
+    }
+
     return (
       <View
         style={{
           flexDirection: "row",
           width: Dimensions.get("window").width - 10,
           justifyContent: "space-around",
+          marginBottom: 5,
         }}
       >
         <Text>{item.timeStamp}</Text>
         <Text>{item.value}</Text>
-        <Text>{item.situation}</Text>
+        {situation}
       </View>
     );
   };
 
-  const returnReverseArray = () => {
-    var arrayAux = dataExtract;
+  function returnReverseArray(array) {
+    var arrayAux = array;
     arrayAux.reverse();
     return arrayAux;
+  }
+
+  const returnImage = () => {
+    switch (patientInfo.photo) {
+      case "Male":
+        return require("../assets/Man.png");
+      case "Female":
+        return require("../assets/Woman.png");
+      case "ElderlyM":
+        return require("../assets/ElderlyMan.png");
+      case "ElderlyF":
+        return require("../assets/ElderlyWoman.png");
+    }
   };
 
   return (
     <SafeAreaView style={styles.Container}>
       <View style={styles.patientHeader}>
         <View style={styles.headerLeft}>
-          
+          <Image source={returnImage()} style={styles.headerImage} />
         </View>
         <View style={styles.headerMiddle}>
-          <Text>Dados do Paciente</Text>
+          <Text style={{ color: darkGray, fontWeight: "bold" }}>
+            {patientInfo.name}
+          </Text>
+          <Text style={{ color: baseGray, fontWeight: "bold" }}>
+            Idade: {patientInfo.age}
+          </Text>
+          <Text style={{ color: baseGray, fontWeight: "bold" }}>
+            {patientInfo.gender}
+          </Text>
         </View>
         <View style={styles.headerRight}>
-          <Text>algum frufru</Text>
+          <Image
+            source={require("../assets/Heart.png")}
+            style={{ width: 40, height: 40 }}
+          />
+          <Text style={{ color: errorRed, fontWeight: "bold" }}>
+            {currentValue}
+          </Text>
         </View>
       </View>
       <View style={styles.notificationArea}>
@@ -180,14 +244,14 @@ export default function App() {
           backgroundGradientTo: "#17A589",
           decimalPlaces: 0, // optional, defaults to 2dp
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => cleanWhite,
           style: {
             borderRadius: 16,
           },
           propsForDots: {
-            r: "6",
+            r: "5",
             strokeWidth: "2",
-            stroke: "#ffa726",
+            stroke: brightOrange,
           },
         }}
         bezier
@@ -195,7 +259,8 @@ export default function App() {
       />
       <View style={styles.dataExtractArea}>
         <FlatList
-          data={returnReverseArray()}
+          //data={returnReverseArray(dataExtract)}
+          data={dataExtract}
           renderItem={({ item }) => renderListItem(item)}
         />
       </View>
@@ -203,7 +268,16 @@ export default function App() {
   );
 }
 
-const cleanWhite = "#fff";
+const brightOrange = "#ff7300";
+const liveGreen = "#009440";
+const premiumGold = "#FFD700";
+const lightGray = "#8A8A8A";
+const baseGray = "#6d6c6c";
+const darkGray = "#555555";
+const iceWhite = "#f5f5f5";
+const cleanWhite = "#ffffff";
+const errorRed = "#EC1C1C";
+export const transparent = "rgba(0,0,0,0.7)";
 
 const styles = StyleSheet.create({
   Container: {
@@ -217,23 +291,30 @@ const styles = StyleSheet.create({
     height: 100,
     width: Dimensions.get("window").width - 10,
     flexDirection: "row",
-    borderWidth: 1,
     borderRadius: 15,
+    backgroundColor: iceWhite,
   },
   headerLeft: {
     height: "100%",
-    width: "25%",
-    backgroundColor: "green",
+    width: "35%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerImage: {
+    width: 80,
+    height: 80,
   },
   headerMiddle: {
     height: "100%",
     width: "40%",
-    backgroundColor: "yellow",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
   },
   headerRight: {
     height: "100%",
-    width: "35%",
-    backgroundColor: "blue",
+    width: "25%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   notificationArea: {
     marginTop: 5,
@@ -250,7 +331,6 @@ const styles = StyleSheet.create({
   },
   dataExtractArea: {
     flex: 1,
-    borderWidth: 1,
     borderRadius: 15,
     marginBottom: 5,
   },
