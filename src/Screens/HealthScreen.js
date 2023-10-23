@@ -10,10 +10,20 @@ import {
 } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
-import { patientInfo, patientData } from "./database/Pacient01";
 
-export default function App() {
-  const [data, setData] = useState({
+import {
+  baseGray,
+  darkGray,
+  iceWhite,
+  errorRed,
+  liveGreen,
+  cleanWhite,
+  premiumGold,
+  brightOrange,
+} from "../Styles/ColorScheme";
+
+export default function HealthScreen(props) {
+  const [graphData, setData] = useState({
     datasets: [
       {
         data: [0],
@@ -23,20 +33,40 @@ export default function App() {
     ],
     legend: ["Batimentos por Minuto"],
   });
+
   const [dataExtract, setDataExtract] = useState([]);
   const [currentValue, setCurrentValue] = useState(0);
+  const [displayStatus, setDisplayStatus] = useState("normal");
+
+  const [nome, setNome] = useState("");
+  const [idade, setidade] = useState("");
+  const [genero, setGenero] = useState("");
+  const [foto, setFoto] = useState("Male");
+
+  const printData = (data) => {
+    console.log(data);
+  };
 
   useEffect(() => {
-    getDataFromAPI(0);
+    var data = props.route.params.item;
+    setPatientData(data);
+    getHealthData(0);
   }, []);
 
-  function getDataFromAPI(iteration) {
-    setTimeout(() => {
-      var arrayAux = data.datasets[0].data;
+  function setPatientData(patientData) {
+    setNome(patientData.name);
+    setidade(patientData.age);
+    setGenero(patientData.gender);
+    setFoto(patientData.photo);
+  }
 
+  function getHealthData(iteration) {
+    var healthData = props.route.params.item.patientData;
+    var arrayAux = graphData.datasets[0].data;
+
+    setTimeout(() => {
       if (arrayAux.length < 15) {
-        arrayAux.push(patientData[iteration]);
-        console.log(arrayAux);
+        arrayAux.push(healthData[iteration]);
 
         setData({
           datasets: [
@@ -49,32 +79,43 @@ export default function App() {
           legend: ["Batimentos por Minuto"],
         });
 
-        setCurrentValue(patientData[iteration]);
+        setCurrentValue(healthData[iteration]);
 
         var dataExtractAux = dataExtract;
         var dateAux = new Date();
         var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
 
+        if (healthData[iteration] >= 70 && healthData[iteration] <= 150) {
+          var situation = "normal";
+        } else if (
+          healthData[iteration] >= 40 &&
+          healthData[iteration] <= 200
+        ) {
+          var situation = "alerta";
+        } else {
+          var situation = "perigo";
+        }
+
         dataExtractAux.push({
           timeStamp: dateformatted,
-          value: patientData[iteration],
-          situation: "normal",
+          value: healthData[iteration],
+          situation: situation,
         });
 
+        console.log(dataExtractAux[iteration]);
         setDataExtract(dataExtractAux);
 
-        if (iteration < patientData.length - 1) {
+        if (iteration < healthData.length - 1) {
           var aux = iteration + 1;
-          getDataFromAPI(aux);
+          getHealthData(aux);
         } else {
-          console.log(dataExtract);
+          printData(dataExtract);
         }
       } else {
         arrayAux.reverse();
         arrayAux.pop();
         arrayAux.reverse();
-        arrayAux.push(patientData[iteration]);
-        console.log(arrayAux);
+        arrayAux.push(healthData[iteration]);
 
         setData({
           datasets: [
@@ -87,28 +128,41 @@ export default function App() {
           legend: ["Batimentos por Minuto"],
         });
 
-        setCurrentValue(patientData[iteration]);
+        setCurrentValue(healthData[iteration]);
 
         var dataExtractAux = dataExtract;
         var dateAux = new Date();
         var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
+        var situation = "normal";
+
+        if (healthData[iteration] >= 70 && healthData[iteration] <= 150) {
+          var situation = "normal";
+        } else if (
+          healthData[iteration] >= 40 &&
+          healthData[iteration] <= 200
+        ) {
+          var situation = "alerta";
+        } else {
+          var situation = "perigo";
+        }
 
         dataExtractAux.push({
           timeStamp: dateformatted,
-          value: patientData[iteration],
-          situation: "normal",
+          value: healthData[iteration],
+          situation: situation,
         });
 
+        console.log(dataExtractAux[iteration]);
         setDataExtract(dataExtractAux);
 
-        if (iteration < patientData.length - 1) {
+        if (iteration < healthData.length - 1) {
           var aux = iteration + 1;
-          getDataFromAPI(aux);
+          getHealthData(aux);
         } else {
-          console.log(dataExtract);
+          printData(dataExtract);
         }
       }
-    }, 2000);
+    }, 1000);
   }
 
   const formatDate = (date) => {
@@ -150,19 +204,37 @@ export default function App() {
             borderRadius: 5,
           }}
         >
-          <Text style={{ color: cleanWhite }}>Saudável</Text>
+          <Text style={{ color: cleanWhite, fontWeight: "bold" }}>
+            Saudável
+          </Text>
         </View>
       );
-    } else if (item.situation === "atencao") {
+    } else if (item.situation === "alerta") {
       var situation = (
-        <View>
-          <Text>Atenção</Text>
+        <View
+          style={{
+            width: 80,
+            backgroundColor: premiumGold,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: darkGray, fontWeight: "bold" }}>Atenção</Text>
         </View>
       );
     } else {
       var situation = (
-        <View>
-          <Text>Perigo</Text>
+        <View
+          style={{
+            width: 80,
+            backgroundColor: errorRed,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: cleanWhite, fontWeight: "bold" }}>Perigo</Text>
         </View>
       );
     }
@@ -190,15 +262,15 @@ export default function App() {
   }
 
   const returnImage = () => {
-    switch (patientInfo.photo) {
+    switch (foto) {
       case "Male":
-        return require("../assets/Man.png");
+        return require("../../assets/Man.png");
       case "Female":
-        return require("../assets/Woman.png");
+        return require("../../assets/Woman.png");
       case "ElderlyM":
-        return require("../assets/ElderlyMan.png");
+        return require("../../assets/ElderlyMan.png");
       case "ElderlyF":
-        return require("../assets/ElderlyWoman.png");
+        return require("../../assets/ElderlyWoman.png");
     }
   };
 
@@ -209,19 +281,15 @@ export default function App() {
           <Image source={returnImage()} style={styles.headerImage} />
         </View>
         <View style={styles.headerMiddle}>
-          <Text style={{ color: darkGray, fontWeight: "bold" }}>
-            {patientInfo.name}
-          </Text>
+          <Text style={{ color: darkGray, fontWeight: "bold" }}>{nome}</Text>
           <Text style={{ color: baseGray, fontWeight: "bold" }}>
-            Idade: {patientInfo.age}
+            Idade: {idade}
           </Text>
-          <Text style={{ color: baseGray, fontWeight: "bold" }}>
-            {patientInfo.gender}
-          </Text>
+          <Text style={{ color: baseGray, fontWeight: "bold" }}>{genero}</Text>
         </View>
         <View style={styles.headerRight}>
           <Image
-            source={require("../assets/Heart.png")}
+            source={require("../../assets/Heart.png")}
             style={{ width: 40, height: 40 }}
           />
           <Text style={{ color: errorRed, fontWeight: "bold" }}>
@@ -233,7 +301,7 @@ export default function App() {
         <Text>Notificações</Text>
       </View>
       <LineChart
-        data={data}
+        data={graphData}
         width={Dimensions.get("window").width - 10}
         height={250}
         fromZero={true}
@@ -267,17 +335,6 @@ export default function App() {
     </SafeAreaView>
   );
 }
-
-const brightOrange = "#ff7300";
-const liveGreen = "#009440";
-const premiumGold = "#FFD700";
-const lightGray = "#8A8A8A";
-const baseGray = "#6d6c6c";
-const darkGray = "#555555";
-const iceWhite = "#f5f5f5";
-const cleanWhite = "#ffffff";
-const errorRed = "#EC1C1C";
-export const transparent = "rgba(0,0,0,0.7)";
 
 const styles = StyleSheet.create({
   Container: {
