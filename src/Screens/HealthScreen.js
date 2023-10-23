@@ -102,7 +102,6 @@ export default function HealthScreen(props) {
           situation: situation,
         });
 
-        console.log(dataExtractAux[iteration]);
         setDataExtract(dataExtractAux);
 
         if (iteration < healthData.length - 1) {
@@ -152,7 +151,6 @@ export default function HealthScreen(props) {
           situation: situation,
         });
 
-        console.log(dataExtractAux[iteration]);
         setDataExtract(dataExtractAux);
 
         if (iteration < healthData.length - 1) {

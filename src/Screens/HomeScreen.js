@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { patientArray } from "../Database/Patients";
-import { cleanWhite, iceWhite } from "../Styles/ColorScheme";
+import { cleanWhite, iceWhite, baseGray } from "../Styles/ColorScheme";
 
 export default function HomeScreen(props) {
   const [dataArray, setDataArray] = useState([]);
@@ -32,10 +32,24 @@ export default function HomeScreen(props) {
     );
   };
 
+  const returnImage = (foto) => {
+    switch (foto) {
+      case "Male":
+        return require("../../assets/Man.png");
+      case "Female":
+        return require("../../assets/Woman.png");
+      case "ElderlyM":
+        return require("../../assets/ElderlyMan.png");
+      case "ElderlyF":
+        return require("../../assets/ElderlyWoman.png");
+    }
+  };
+
   const renderListItem = (item) => {
     return (
       <TouchableOpacity
         style={{
+          flexDirection: "row",
           width: Dimensions.get("window").width - 20,
           height: 80,
           backgroundColor: iceWhite,
@@ -44,7 +58,35 @@ export default function HomeScreen(props) {
         }}
         onPress={() => goToHealthScreen(item)}
       >
-        <Text>{item.name}</Text>
+        <View
+          style={{
+            height: 80,
+            width: 90,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            source={returnImage(item.photo)}
+            style={{ width: 60, height: 60 }}
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text style={{ color: baseGray, fontSize: 20 }}>{item.name}</Text>
+        </View>
+        <View
+          style={{
+            height: 80,
+            width: 60,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            source={require("../../assets/Seguir.png")}
+            style={{ width: 40, height: 40 }}
+          />
+        </View>
       </TouchableOpacity>
     );
   };
