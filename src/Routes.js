@@ -15,13 +15,13 @@ const MyStack = () => {
         <Stack.Screen
           name="HomeScreen"
           component={HomeScreen}
-          options={{ title: "HomeScreen" }}
+          options={{ title: "Menu Principal" }}
         />
 
         <Stack.Screen
           name="HealthScreen"
           component={HealthScreen}
-          options={{ title: "HealthScreen" }}
+          options={{ title: "Tela de Monitoramento" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

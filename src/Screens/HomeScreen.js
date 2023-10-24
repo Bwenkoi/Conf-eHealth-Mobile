@@ -26,8 +26,15 @@ export default function HomeScreen(props) {
 
   const headerComponent = () => {
     return (
-      <View>
-        <Text>header</Text>
+      <View
+        style={{
+          width: Dimensions.get("window").width - 20,
+          alignItems: "center",
+          marginBottom: 5,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ color: baseGray, fontSize: 20 }}>Pacientes</Text>
       </View>
     );
   };
@@ -97,8 +104,16 @@ export default function HomeScreen(props) {
 
   const footerComponent = () => {
     return (
-      <View>
-        <Text>Footer</Text>
+      <View
+        style={{
+          width: Dimensions.get("window").width - 20,
+          alignItems: "center",
+          marginTop: 5,
+        }}
+      >
+        <Text style={{ color: baseGray, fontSize: 15 }}>
+          @Conf-eHealth Mobile
+        </Text>
       </View>
     );
   };
