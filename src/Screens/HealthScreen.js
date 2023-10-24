@@ -61,104 +61,55 @@ export default function HealthScreen(props) {
   }
 
   function getHealthData(iteration) {
-    var healthData = props.route.params.item.patientData;
-    var arrayAux = graphData.datasets[0].data;
-
     setTimeout(() => {
+      var healthData = props.route.params.item.patientData;
+      var arrayAux = graphData.datasets[0].data;
+
       if (arrayAux.length < 15) {
         arrayAux.push(healthData[iteration]);
-
-        setData({
-          datasets: [
-            {
-              data: arrayAux,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // optional
-              strokeWidth: 2, // optional
-            },
-          ],
-          legend: ["Batimentos por Minuto"],
-        });
-
-        setCurrentValue(healthData[iteration]);
-
-        var dataExtractAux = dataExtract;
-        var dateAux = new Date();
-        var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
-
-        if (healthData[iteration] >= 70 && healthData[iteration] <= 150) {
-          var situation = "normal";
-        } else if (
-          healthData[iteration] >= 40 &&
-          healthData[iteration] <= 200
-        ) {
-          var situation = "alerta";
-        } else {
-          var situation = "perigo";
-        }
-
-        dataExtractAux.push({
-          timeStamp: dateformatted,
-          value: healthData[iteration],
-          situation: situation,
-        });
-
-        setDataExtract(dataExtractAux);
-
-        if (iteration < healthData.length - 1) {
-          var aux = iteration + 1;
-          getHealthData(aux);
-        } else {
-          printData(dataExtract);
-        }
       } else {
         arrayAux.reverse();
         arrayAux.pop();
         arrayAux.reverse();
         arrayAux.push(healthData[iteration]);
+      }
 
-        setData({
-          datasets: [
-            {
-              data: arrayAux,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // optional
-              strokeWidth: 2, // optional
-            },
-          ],
-          legend: ["Batimentos por Minuto"],
-        });
+      setData({
+        datasets: [
+          {
+            data: arrayAux,
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // optional
+            strokeWidth: 2, // optional
+          },
+        ],
+        legend: ["Batimentos por Minuto"],
+      });
 
-        setCurrentValue(healthData[iteration]);
+      setCurrentValue(healthData[iteration]);
 
-        var dataExtractAux = dataExtract;
-        var dateAux = new Date();
-        var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
+      if (healthData[iteration] >= 70 && healthData[iteration] <= 150)
         var situation = "normal";
+      else if (healthData[iteration] >= 40 && healthData[iteration] <= 200)
+        var situation = "alerta";
+      else var situation = "perigo";
 
-        if (healthData[iteration] >= 70 && healthData[iteration] <= 150) {
-          var situation = "normal";
-        } else if (
-          healthData[iteration] >= 40 &&
-          healthData[iteration] <= 200
-        ) {
-          var situation = "alerta";
-        } else {
-          var situation = "perigo";
-        }
+      var dataExtractAux = dataExtract;
+      var dateAux = new Date();
+      var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
 
-        dataExtractAux.push({
-          timeStamp: dateformatted,
-          value: healthData[iteration],
-          situation: situation,
-        });
+      dataExtractAux.push({
+        timeStamp: dateformatted,
+        value: healthData[iteration],
+        situation: situation,
+      });
 
-        setDataExtract(dataExtractAux);
+      setDataExtract(dataExtractAux);
 
-        if (iteration < healthData.length - 1) {
-          var aux = iteration + 1;
-          getHealthData(aux);
-        } else {
-          printData(dataExtract);
-        }
+      if (iteration < healthData.length - 1) {
+        var aux = iteration + 1;
+        getHealthData(aux);
+      } else {
+        printData(dataExtract);
       }
     }, 1000);
   }
