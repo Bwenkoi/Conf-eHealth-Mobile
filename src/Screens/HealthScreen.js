@@ -35,6 +35,7 @@ export default function HealthScreen(props) {
   });
 
   const [dataExtract, setDataExtract] = useState([]);
+  const [invertDataExtract, setInvertDataExtract] = useState([]);
   const [currentValue, setCurrentValue] = useState(0);
   const [displayStatus, setDisplayStatus] = useState("normal");
 
@@ -87,9 +88,9 @@ export default function HealthScreen(props) {
 
       setCurrentValue(healthData[iteration]);
 
-      if (healthData[iteration] >= 70 && healthData[iteration] <= 150)
+      if (healthData[iteration] >= 60 && healthData[iteration] <= 119)
         var situation = "normal";
-      else if (healthData[iteration] >= 40 && healthData[iteration] <= 200)
+      else if (healthData[iteration] >= 40 && healthData[iteration] <= 180)
         var situation = "alerta";
       else var situation = "perigo";
 
@@ -104,6 +105,18 @@ export default function HealthScreen(props) {
       });
 
       setDataExtract(dataExtractAux);
+
+      var dataInvExtractAux = invertDataExtract;
+
+      dataInvExtractAux.reverse();
+      dataInvExtractAux.push({
+        timeStamp: dateformatted,
+        value: healthData[iteration],
+        situation: situation,
+      });
+      dataInvExtractAux.reverse();
+
+      setInvertDataExtract(dataInvExtractAux);
 
       if (iteration < healthData.length - 1) {
         var aux = iteration + 1;
@@ -204,12 +217,6 @@ export default function HealthScreen(props) {
     );
   };
 
-  function returnReverseArray(array) {
-    var arrayAux = array;
-    arrayAux.reverse();
-    return arrayAux;
-  }
-
   const returnImage = () => {
     switch (foto) {
       case "Male":
@@ -276,8 +283,7 @@ export default function HealthScreen(props) {
       />
       <View style={styles.dataExtractArea}>
         <FlatList
-          //data={returnReverseArray(dataExtract)}
-          data={dataExtract}
+          data={invertDataExtract}
           renderItem={({ item }) => renderListItem(item)}
         />
       </View>
