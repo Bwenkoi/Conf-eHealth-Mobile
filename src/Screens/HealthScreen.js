@@ -17,9 +17,13 @@ import {
   iceWhite,
   errorRed,
   liveGreen,
+  darkYellow,
   cleanWhite,
   premiumGold,
   brightOrange,
+  graphBackground,
+  graphGradientFrom,
+  graphGradientTo,
 } from "../Styles/ColorScheme";
 
 export default function HealthScreen(props) {
@@ -37,14 +41,14 @@ export default function HealthScreen(props) {
   const [dataExtract, setDataExtract] = useState([]);
   const [invertDataExtract, setInvertDataExtract] = useState([]);
   const [currentValue, setCurrentValue] = useState(0);
-  const [displayStatus, setDisplayStatus] = useState("normal");
+  const [displayNotification, setDisplayNotification] = useState(0);
 
   const [nome, setNome] = useState("");
   const [idade, setidade] = useState("");
   const [genero, setGenero] = useState("");
   const [foto, setFoto] = useState("Male");
 
-  const printData = (data) => {
+  const extractData = (data) => {
     console.log(data);
   };
 
@@ -88,11 +92,9 @@ export default function HealthScreen(props) {
 
       setCurrentValue(healthData[iteration]);
 
-      if (healthData[iteration] >= 60 && healthData[iteration] <= 119)
-        var situation = "normal";
-      else if (healthData[iteration] >= 40 && healthData[iteration] <= 180)
-        var situation = "alerta";
-      else var situation = "perigo";
+      var situation = checkSituation(healthData[iteration]);
+      if (situation === "Atenção") setDisplayNotification(1);
+      if (situation === "Perigo") setDisplayNotification(2);
 
       var dataExtractAux = dataExtract;
       var dateAux = new Date();
@@ -122,9 +124,15 @@ export default function HealthScreen(props) {
         var aux = iteration + 1;
         getHealthData(aux);
       } else {
-        printData(dataExtract);
+        extractData(dataExtract);
       }
     }, 1000);
+  }
+
+  function checkSituation(healthData) {
+    if (healthData >= 60 && healthData <= 119) return "Normal";
+    else if (healthData >= 40 && healthData <= 180) return "Atenção";
+    else return "Perigo";
   }
 
   const formatDate = (date) => {
@@ -155,63 +163,30 @@ export default function HealthScreen(props) {
   };
 
   const renderListItem = (item) => {
-    if (item.situation === "normal") {
+    if (item.situation === "Normal") {
       var situation = (
-        <View
-          style={{
-            width: 80,
-            backgroundColor: liveGreen,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 5,
-          }}
-        >
-          <Text style={{ color: cleanWhite, fontWeight: "bold" }}>
-            Saudável
-          </Text>
+        <View style={[styles.listMarker, { backgroundColor: liveGreen }]}>
+          <Text style={styles.clearText}>Normal</Text>
         </View>
       );
-    } else if (item.situation === "alerta") {
+    } else if (item.situation === "Atenção") {
       var situation = (
-        <View
-          style={{
-            width: 80,
-            backgroundColor: premiumGold,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 5,
-          }}
-        >
-          <Text style={{ color: darkGray, fontWeight: "bold" }}>Atenção</Text>
+        <View style={[styles.listMarker, { backgroundColor: premiumGold }]}>
+          <Text style={styles.darkText}>Atenção</Text>
         </View>
       );
     } else {
       var situation = (
-        <View
-          style={{
-            width: 80,
-            backgroundColor: errorRed,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 5,
-          }}
-        >
-          <Text style={{ color: cleanWhite, fontWeight: "bold" }}>Perigo</Text>
+        <View style={[styles.listMarker, { backgroundColor: errorRed }]}>
+          <Text style={styles.clearText}>Perigo</Text>
         </View>
       );
     }
 
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          width: Dimensions.get("window").width - 10,
-          justifyContent: "space-around",
-          marginBottom: 5,
-        }}
-      >
-        <Text>{item.timeStamp}</Text>
-        <Text>{item.value}</Text>
+      <View style={styles.listItem}>
+        <Text style={styles.darkText}>{item.timeStamp}</Text>
+        <Text style={styles.darkText}>{item.value}</Text>
         {situation}
       </View>
     );
@@ -228,6 +203,48 @@ export default function HealthScreen(props) {
       case "ElderlyF":
         return require("../../assets/ElderlyWoman.png");
     }
+  };
+
+  const returnNotification = () => {
+    if (displayNotification === 0) {
+      var visualNotification = (
+        <View style={styles.notificationView}>
+          <Image
+            source={require("../../assets/Correct.png")}
+            style={styles.notificationIcon}
+          />
+          <Text style={[styles.notificationText, { color: liveGreen }]}>
+            Normal
+          </Text>
+        </View>
+      );
+    } else if (displayNotification === 1) {
+      var visualNotification = (
+        <View style={styles.notificationView}>
+          <Image
+            source={require("../../assets/Warning.png")}
+            style={styles.notificationIcon}
+          />
+          <Text style={[styles.notificationText, { color: darkYellow }]}>
+            Atenção
+          </Text>
+        </View>
+      );
+    } else {
+      var visualNotification = (
+        <View style={styles.notificationView}>
+          <Image
+            source={require("../../assets/Incorrect.png")}
+            style={styles.notificationIcon}
+          />
+          <Text style={[styles.notificationText, { color: errorRed }]}>
+            Perigo
+          </Text>
+        </View>
+      );
+    }
+
+    return visualNotification;
   };
 
   return (
@@ -254,33 +271,26 @@ export default function HealthScreen(props) {
         </View>
       </View>
       <View style={styles.notificationArea}>
-        <Text>Notificações</Text>
+        {returnNotification()}
+        <LineChart
+          data={graphData}
+          width={Dimensions.get("window").width - 20}
+          height={250}
+          fromZero={true}
+          withVerticalLabels={false}
+          chartConfig={{
+            backgroundColor: graphBackground,
+            backgroundGradientFrom: graphGradientFrom,
+            backgroundGradientTo: graphGradientTo,
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            propsForDots: { r: "5" },
+          }}
+          bezier
+          style={styles.graphStyle}
+        />
       </View>
-      <LineChart
-        data={graphData}
-        width={Dimensions.get("window").width - 10}
-        height={250}
-        fromZero={true}
-        withVerticalLabels={false}
-        chartConfig={{
-          backgroundColor: "#117864",
-          backgroundGradientFrom: "#148F77",
-          backgroundGradientTo: "#17A589",
-          decimalPlaces: 0, // optional, defaults to 2dp
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => cleanWhite,
-          style: {
-            borderRadius: 16,
-          },
-          propsForDots: {
-            r: "5",
-            strokeWidth: "2",
-            stroke: brightOrange,
-          },
-        }}
-        bezier
-        style={styles.graphStyle}
-      />
       <View style={styles.dataExtractArea}>
         <FlatList
           data={invertDataExtract}
@@ -304,7 +314,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 10,
     flexDirection: "row",
     borderRadius: 15,
-    backgroundColor: iceWhite,
   },
   headerLeft: {
     height: "100%",
@@ -328,14 +337,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  notificationView: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   notificationArea: {
     marginTop: 5,
-    height: 30,
+    height: 350,
+    backgroundColor: iceWhite,
     width: Dimensions.get("window").width - 10,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
-    borderWidth: 1,
     borderRadius: 15,
+  },
+  notificationIcon: {
+    width: 25,
+    height: 25,
+    marginRight: 10,
+  },
+  notificationText: {
+    fontWeight: "bold",
+    fontSize: 15,
   },
   graphStyle: {
     marginVertical: 5,
@@ -343,7 +366,28 @@ const styles = StyleSheet.create({
   },
   dataExtractArea: {
     flex: 1,
-    borderRadius: 15,
+    marginVertical: 10,
+  },
+  listItem: {
+    flexDirection: "row",
+    width: Dimensions.get("window").width - 10,
+    justifyContent: "space-around",
     marginBottom: 5,
+  },
+  listMarker: {
+    width: 80,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 5,
+  },
+  darkText: {
+    color: darkGray,
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  clearText: {
+    color: cleanWhite,
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });

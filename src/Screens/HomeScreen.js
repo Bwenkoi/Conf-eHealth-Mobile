@@ -34,7 +34,7 @@ export default function HomeScreen(props) {
           marginTop: 10,
         }}
       >
-        <Text style={{ color: baseGray, fontSize: 20 }}>Pacientes</Text>
+        <Text style={{ color: baseGray, fontSize: 20 }}>Lista de Pacientes</Text>
       </View>
     );
   };

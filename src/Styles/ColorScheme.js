@@ -1,10 +1,15 @@
 export const brightOrange = "#ff7300";
 export const liveGreen = "#009440";
 export const premiumGold = "#FFD700";
+export const darkYellow = "#9A7D0A";
 export const lightGray = "#8A8A8A";
 export const baseGray = "#6d6c6c";
 export const darkGray = "#555555";
 export const iceWhite = "#f5f5f5";
 export const cleanWhite = "#ffffff";
 export const errorRed = "#EC1C1C";
+export const cleanRed = "#F2D7D5";
 export const transparent = "rgba(0,0,0,0.7)";
+export const graphBackground = "#117864";
+export const graphGradientFrom = "#148F77";
+export const graphGradientTo = "#17A589";

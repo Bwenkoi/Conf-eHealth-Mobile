@@ -120,6 +120,6 @@ export const patientArray = [
     photo: "ElderlyF",
     gender: "Feminino",
     rule: 2,
-    patientData: [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72],
+    patientData: [61, 95, 122, 130, 189, 181, 125, 123, 101, 91, 70, 78],
   },
 ];
