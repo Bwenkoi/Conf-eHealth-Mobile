@@ -20,7 +20,6 @@ import {
   darkYellow,
   cleanWhite,
   premiumGold,
-  brightOrange,
   graphBackground,
   graphGradientFrom,
   graphGradientTo,
@@ -55,7 +54,7 @@ export default function HealthScreen(props) {
   useEffect(() => {
     var data = props.route.params.item;
     setPatientData(data);
-    getHealthData(0);
+    getHealthData(0, "Normal");
   }, []);
 
   function setPatientData(patientData) {
@@ -65,7 +64,7 @@ export default function HealthScreen(props) {
     setFoto(patientData.photo);
   }
 
-  function getHealthData(iteration) {
+  function getHealthData(iteration, displaySituation) {
     setTimeout(() => {
       var healthData = props.route.params.item.patientData;
       var arrayAux = graphData.datasets[0].data;
@@ -92,7 +91,7 @@ export default function HealthScreen(props) {
 
       setCurrentValue(healthData[iteration]);
 
-      var situation = checkSituation(healthData[iteration]);
+      var situation = checkSituationRule01(healthData[iteration]);
       if (situation === "Atenção") setDisplayNotification(1);
       if (situation === "Perigo") setDisplayNotification(2);
 
@@ -129,7 +128,13 @@ export default function HealthScreen(props) {
     }, 1000);
   }
 
-  function checkSituation(healthData) {
+  function checkSituationRule01(healthData) {
+    if (healthData >= 60 && healthData <= 119) return "Normal";
+    else if (healthData >= 40 && healthData <= 180) return "Atenção";
+    else return "Perigo";
+  }
+
+  function checkSituationRule02(healthData) {
     if (healthData >= 60 && healthData <= 119) return "Normal";
     else if (healthData >= 40 && healthData <= 180) return "Atenção";
     else return "Perigo";
