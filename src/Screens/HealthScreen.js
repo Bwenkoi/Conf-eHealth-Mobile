@@ -54,7 +54,7 @@ export default function HealthScreen(props) {
   useEffect(() => {
     var data = props.route.params.item;
     setPatientData(data);
-    getHealthData(0, "Normal");
+    getHealthData(0);
   }, []);
 
   function setPatientData(patientData) {
@@ -64,7 +64,7 @@ export default function HealthScreen(props) {
     setFoto(patientData.photo);
   }
 
-  function getHealthData(iteration, displaySituation) {
+  function getHealthData(iteration) {
     setTimeout(() => {
       var healthData = props.route.params.item.patientData;
       var arrayAux = graphData.datasets[0].data;
@@ -92,6 +92,7 @@ export default function HealthScreen(props) {
       setCurrentValue(healthData[iteration]);
 
       var situation = checkSituationRule01(healthData[iteration]);
+
       if (situation === "Atenção") setDisplayNotification(1);
       if (situation === "Perigo") setDisplayNotification(2);
 
