@@ -17,14 +17,14 @@ import {
   darkGray,
   iceWhite,
   errorRed,
+  cleanRed,
   liveGreen,
   darkYellow,
   cleanWhite,
   premiumGold,
-  cleanRed,
+  graphGradientTo,
   graphBackground,
   graphGradientFrom,
-  graphGradientTo,
 } from "../Styles/ColorScheme";
 
 import AlertModal from "./AlertModal";
@@ -64,7 +64,7 @@ export default function HealthScreen(props) {
   useEffect(() => {
     var data = props.route.params.item;
     setPatientData(data);
-    getHealthData(0);
+    getHealthData(0, data.rule);
   }, []);
 
   function setPatientData(patientData) {
@@ -77,7 +77,7 @@ export default function HealthScreen(props) {
     setZipcode(patientData.zipcode);
   }
 
-  function getHealthData(iteration) {
+  function getHealthData(iteration, rule) {
     setTimeout(() => {
       var healthData = props.route.params.item.patientData;
       var arrayAux = graphData.datasets[0].data;
@@ -104,7 +104,11 @@ export default function HealthScreen(props) {
 
       setCurrentValue(healthData[iteration]);
 
-      var situation = checkSituationRule01(healthData[iteration]);
+      if (rule === 1) {
+        var situation = checkSituationRule01(healthData[iteration]);
+      } else {
+        var situation = checkSituationRule02(healthData[iteration]);
+      }
 
       if (situation === "Atenção") setDisplayNotification(1);
       if (situation === "Perigo") {
@@ -138,7 +142,7 @@ export default function HealthScreen(props) {
 
       if (iteration < healthData.length - 1) {
         var aux = iteration + 1;
-        getHealthData(aux);
+        getHealthData(aux, rule);
       } else {
         extractData(dataExtract);
       }
@@ -146,14 +150,14 @@ export default function HealthScreen(props) {
   }
 
   function checkSituationRule01(healthData) {
-    if (healthData >= 60 && healthData <= 119) return "Normal";
+    if (healthData >= 60 && healthData <= 120) return "Normal";
     else if (healthData >= 40 && healthData <= 180) return "Atenção";
     else return "Perigo";
   }
 
   function checkSituationRule02(healthData) {
-    if (healthData >= 60 && healthData <= 119) return "Normal";
-    else if (healthData >= 40 && healthData <= 180) return "Atenção";
+    if (healthData >= 50 && healthData <= 80) return "Normal";
+    else if (healthData >= 30 && healthData <= 110) return "Atenção";
     else return "Perigo";
   }
 
