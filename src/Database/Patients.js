@@ -129,7 +129,6 @@ export const patientArray = [
     address: "Rua Castelo Branco - N° 1025",
     cec: "São Pedro do Sul - MG - Brasil",
     zipcode: "35504-132",
-    patientData: [0],
-    //patientData: [61, 95, 122, 130, 189, 181, 125, 123, 101, 91, 70, 78],
+    patientData: [61, 95, 122, 130, 189, 181, 125, 123, 101, 91, 70, 78],
   },
 ];
