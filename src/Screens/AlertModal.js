@@ -11,6 +11,8 @@ import {
 import {
   baseGray,
   iceWhite,
+  darkGray,
+  errorRed,
   lightGray,
   cleanWhite,
   transparent,
@@ -27,6 +29,19 @@ export default class emergencyModal extends React.Component {
     this.props.onCancel();
   }
 
+  returnImage = () => {
+    switch (this.props.foto) {
+      case "Male":
+        return require("../../assets/Man.png");
+      case "Female":
+        return require("../../assets/Woman.png");
+      case "ElderlyM":
+        return require("../../assets/ElderlyMan.png");
+      case "ElderlyF":
+        return require("../../assets/ElderlyWoman.png");
+    }
+  };
+
   render() {
     return (
       <Modal
@@ -40,10 +55,36 @@ export default class emergencyModal extends React.Component {
             <View style={styles.horizontalSpaces} />
             <View style={styles.modalCenterMiddle}>
               <View style={styles.menuOverItems}>
-                <Image
-                  source={require("../../assets/Location.png")}
-                  style={{ width: 40, height: 40 }}
-                />
+                <Text> CONFIRMAR ENVIO DE AJUDA </Text>
+                <View style={{ flexDirection: "row", marginVertical: 20 }}>
+                  <Image
+                    source={this.returnImage()}
+                    style={{ width: 60, height: 60 }}
+                  />
+                  <View>
+                    <Text style={{ color: darkGray, fontWeight: "bold" }}>
+                      {this.props.nome}
+                    </Text>
+                    <Text style={{ color: baseGray, fontWeight: "bold" }}>
+                      Idade: {this.props.idade}
+                    </Text>
+                    <Text style={{ color: baseGray, fontWeight: "bold" }}>
+                      {this.props.genero}
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Image
+                    source={require("../../assets/Location.png")}
+                    style={{ width: 140, height: 53, marginBottom: 20 }}
+                  />
+
+                  <Text>{this.props.address}</Text>
+                  <Text>{this.props.cec}</Text>
+                  <Text>{this.props.zipcode}</Text>
+                </View>
               </View>
               <View style={styles.menuOverButton}>
                 <TouchableOpacity
@@ -68,10 +109,15 @@ export default class emergencyModal extends React.Component {
                   style={styles.confirmButton}
                   onPress={() => this.closeModal()}
                 >
-                  <Text style={styles.confirmButtonText}>Confirmar</Text>
+                  <Text style={styles.confirmButtonText}> Confirmar </Text>
                   <Image
                     source={require("../../assets/SeguirWhite.png")}
-                    style={{ width: 40, height: 40 }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      marginRight: 20,
+                      marginLeft: 10,
+                    }}
                   />
                 </TouchableOpacity>
               </View>
@@ -113,7 +159,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     width: "90%",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     backgroundColor: iceWhite,
     borderRadius: 10,
   },
@@ -129,9 +175,9 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     borderRadius: 10,
-    backgroundColor: baseGray,
+    backgroundColor: errorRed,
     flexDirection: "row",
   },
   confirmButtonText: {

@@ -48,6 +48,9 @@ export default function HealthScreen(props) {
   const [idade, setidade] = useState("");
   const [genero, setGenero] = useState("");
   const [foto, setFoto] = useState("Male");
+  const [address, setAddress] = useState("");
+  const [cec, setCec] = useState("");
+  const [zipcode, setZipcode] = useState("");
 
   const [showModal, setShowModal] = useState(false);
 
@@ -66,6 +69,9 @@ export default function HealthScreen(props) {
     setidade(patientData.age);
     setGenero(patientData.gender);
     setFoto(patientData.photo);
+    setAddress(patientData.address);
+    setCec(patientData.cec);
+    setZipcode(patientData.zipcode);
   }
 
   function getHealthData(iteration) {
@@ -268,6 +274,13 @@ export default function HealthScreen(props) {
     <SafeAreaView style={styles.Container}>
       <AlertModal
         isVisible={showModal}
+        nome={nome}
+        idade={idade}
+        genero={genero}
+        address={address}
+        cec={cec}
+        zipcode={zipcode}
+        foto={foto}
         onCancel={() => onCancelPremiumModal()}
       />
 
