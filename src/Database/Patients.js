@@ -5,6 +5,7 @@ export const patientArray = [
     photo: "Male",
     gender: "Masculino",
     rule: 1,
+    address: "",
     patientData: [
       94, 94, 94, 95, 95, 95, 96, 96, 95, 96, 96, 96, 97, 96, 96, 96, 97, 97,
       97, 96, 95, 96, 96, 99, 97, 96, 96, 96, 97, 96, 95, 95, 95, 95, 95, 95,
@@ -97,6 +98,7 @@ export const patientArray = [
     photo: "Female",
     gender: "Feminino",
     rule: 1,
+    address: "",
     patientData: [
       99, 98, 99, 99, 99, 101, 102, 101, 100, 101, 101, 102, 102, 122, 127, 137,
       135, 138, 157, 159, 165, 165, 171, 171, 178, 177, 173, 172, 172, 171, 171,
@@ -120,6 +122,8 @@ export const patientArray = [
     photo: "ElderlyF",
     gender: "Feminino",
     rule: 2,
-    patientData: [61, 95, 122, 130, 189, 181, 125, 123, 101, 91, 70, 78],
+    address: "",
+    patientData: [0],
+    //patientData: [61, 95, 122, 130, 189, 181, 125, 123, 101, 91, 70, 78],
   },
 ];

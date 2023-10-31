@@ -25,6 +25,8 @@ import {
   graphGradientTo,
 } from "../Styles/ColorScheme";
 
+import AlertModal from "./AlertModal";
+
 export default function HealthScreen(props) {
   const [graphData, setData] = useState({
     datasets: [
@@ -46,6 +48,8 @@ export default function HealthScreen(props) {
   const [idade, setidade] = useState("");
   const [genero, setGenero] = useState("");
   const [foto, setFoto] = useState("Male");
+
+  const [showModal, setShowModal] = useState(false);
 
   const extractData = (data) => {
     console.log(data);
@@ -94,7 +98,10 @@ export default function HealthScreen(props) {
       var situation = checkSituationRule01(healthData[iteration]);
 
       if (situation === "Atenção") setDisplayNotification(1);
-      if (situation === "Perigo") setDisplayNotification(2);
+      if (situation === "Perigo") {
+        setShowModal(true);
+        setDisplayNotification(2);
+      }
 
       var dataExtractAux = dataExtract;
       var dateAux = new Date();
@@ -253,8 +260,17 @@ export default function HealthScreen(props) {
     return visualNotification;
   };
 
+  const onCancelPremiumModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <SafeAreaView style={styles.Container}>
+      <AlertModal
+        isVisible={showModal}
+        onCancel={() => onCancelPremiumModal()}
+      />
+
       <View style={styles.patientHeader}>
         <View style={styles.headerLeft}>
           <Image source={returnImage()} style={styles.headerImage} />
