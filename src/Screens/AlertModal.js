@@ -117,7 +117,7 @@ export default class emergencyModal extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.confirmButton}
-                  onPress={() => this.closeModal()}
+                  onPress={() => this.props.onConfirm()}
                 >
                   <Text style={styles.confirmButtonText}>Confirmar</Text>
                   <Image

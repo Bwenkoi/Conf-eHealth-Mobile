@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Dimensions,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
@@ -20,6 +21,7 @@ import {
   darkYellow,
   cleanWhite,
   premiumGold,
+  cleanRed,
   graphBackground,
   graphGradientFrom,
   graphGradientTo,
@@ -53,6 +55,7 @@ export default function HealthScreen(props) {
   const [zipcode, setZipcode] = useState("");
 
   const [showModal, setShowModal] = useState(false);
+  const [isHelpSent, setisHelpSent] = useState(false);
 
   const extractData = (data) => {
     console.log(data);
@@ -224,6 +227,10 @@ export default function HealthScreen(props) {
     }
   };
 
+  const openModal = () => {
+    setShowModal(true);
+  };
+
   const returnNotification = () => {
     if (displayNotification === 0) {
       var visualNotification = (
@@ -250,15 +257,49 @@ export default function HealthScreen(props) {
         </View>
       );
     } else {
+      if (isHelpSent) {
+        var notificationStatus = (
+          <>
+            <Text style={[styles.notificationText, { color: errorRed }]}>
+              Ajuda Enviada
+            </Text>
+          </>
+        );
+      } else {
+        var notificationStatus = (
+          <>
+            <Text style={[styles.notificationText, { color: errorRed }]}>
+              Enviar Ajuda
+            </Text>
+            <Image
+              source={require("../../assets/Seguir.png")}
+              style={[styles.notificationIcon, { marginLeft: 5 }]}
+            />
+          </>
+        );
+      }
+
       var visualNotification = (
         <View style={styles.notificationView}>
-          <Image
-            source={require("../../assets/Incorrect.png")}
-            style={styles.notificationIcon}
-          />
-          <Text style={[styles.notificationText, { color: errorRed }]}>
-            Perigo
-          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Image
+              source={require("../../assets/Incorrect.png")}
+              style={styles.notificationIcon}
+            />
+            <Text style={[styles.notificationText, { color: errorRed }]}>
+              Perigo
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              position: "absolute",
+              right: 10,
+            }}
+            onPress={openModal}
+          >
+            {notificationStatus}
+          </TouchableOpacity>
         </View>
       );
     }
@@ -268,6 +309,11 @@ export default function HealthScreen(props) {
 
   const onCancelPremiumModal = () => {
     setShowModal(false);
+  };
+
+  const onConfirmPremiumModal = () => {
+    setShowModal(false);
+    setisHelpSent(true);
   };
 
   return (
@@ -282,6 +328,7 @@ export default function HealthScreen(props) {
         zipcode={zipcode}
         foto={foto}
         onCancel={() => onCancelPremiumModal()}
+        onConfirm={() => onConfirmPremiumModal()}
       />
 
       <View style={styles.patientHeader}>
@@ -305,7 +352,14 @@ export default function HealthScreen(props) {
           </Text>
         </View>
       </View>
-      <View style={styles.notificationArea}>
+      <View
+        style={[
+          styles.notificationArea,
+          displayNotification === 2
+            ? { backgroundColor: cleanRed }
+            : { backgroundColor: iceWhite },
+        ]}
+      >
         {returnNotification()}
         <LineChart
           data={graphData}
@@ -373,6 +427,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   notificationView: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -380,7 +435,6 @@ const styles = StyleSheet.create({
   notificationArea: {
     marginTop: 5,
     height: 350,
-    backgroundColor: iceWhite,
     width: Dimensions.get("window").width - 10,
     justifyContent: "space-evenly",
     alignItems: "center",
