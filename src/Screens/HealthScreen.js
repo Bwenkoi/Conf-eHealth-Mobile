@@ -104,11 +104,9 @@ export default function HealthScreen(props) {
 
       setCurrentValue(healthData[iteration]);
 
-      if (rule === 1) {
+      if (rule === 1)
         var situation = checkSituationRule01(healthData[iteration]);
-      } else {
-        var situation = checkSituationRule02(healthData[iteration]);
-      }
+      else var situation = checkSituationRule02(healthData[iteration]);
 
       if (situation === "Atenção") setDisplayNotification(1);
       if (situation === "Perigo") {
@@ -116,19 +114,17 @@ export default function HealthScreen(props) {
         setDisplayNotification(2);
       }
 
-      var dataExtractAux = dataExtract;
       var dateAux = new Date();
       var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
+
+      var dataExtractAux = dataExtract;
+      var dataInvExtractAux = invertDataExtract;
 
       dataExtractAux.push({
         timeStamp: dateformatted,
         value: healthData[iteration],
         situation: situation,
       });
-
-      setDataExtract(dataExtractAux);
-
-      var dataInvExtractAux = invertDataExtract;
 
       dataInvExtractAux.reverse();
       dataInvExtractAux.push({
@@ -138,6 +134,7 @@ export default function HealthScreen(props) {
       });
       dataInvExtractAux.reverse();
 
+      setDataExtract(dataExtractAux);
       setInvertDataExtract(dataInvExtractAux);
 
       if (iteration < healthData.length - 1) {
