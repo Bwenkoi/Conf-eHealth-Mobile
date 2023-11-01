@@ -13,12 +13,9 @@ import {
   iceWhite,
   darkGray,
   errorRed,
-  lightGray,
   cleanWhite,
   transparent,
 } from "../Styles/ColorScheme";
-
-//import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class emergencyModal extends React.Component {
   state = {
@@ -55,40 +52,22 @@ export default class emergencyModal extends React.Component {
             <View style={styles.horizontalSpaces} />
             <View style={styles.modalCenterMiddle}>
               <View style={styles.menuOverItems}>
-                <Text
-                  style={{ color: errorRed, fontSize: 20, fontWeight: "bold" }}
-                >
-                  CONFIRMAR ENVIO DE AJUDA
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginVertical: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
+                <Text style={styles.textTitle}>CONFIRMAR ENVIO DE AJUDA</Text>
+                <View style={styles.patientInfoArea}>
                   <Image
                     source={this.returnImage()}
-                    style={{ width: 60, height: 60 }}
+                    style={styles.notificationIcone}
                   />
-                  <View
-                    style={{
-                      paddingLeft: 10,
-                      justifyContent: "center",
-                    }}
-                  >
+                  <View style={styles.patientInfo}>
                     <Text style={styles.text}>{this.props.nome}</Text>
                     <Text style={styles.text}>Idade: {this.props.idade}</Text>
                     <Text style={styles.text}>{this.props.genero}</Text>
                   </View>
                 </View>
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
+                <View style={styles.localArea}>
                   <Image
                     source={require("../../assets/Location.png")}
-                    style={{ width: 205, height: 75, marginBottom: 20 }}
+                    style={styles.localImage}
                   />
 
                   <Text style={styles.text}>{this.props.address}</Text>
@@ -98,22 +77,10 @@ export default class emergencyModal extends React.Component {
               </View>
               <View style={styles.menuOverButton}>
                 <TouchableOpacity
-                  style={{
-                    width: 100,
-                    height: 40,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                  style={styles.buttonArea}
                   onPress={() => this.closeModal()}
                 >
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      color: baseGray,
-                    }}
-                  >
-                    Voltar
-                  </Text>
+                  <Text style={styles.buttonText}>Voltar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.confirmButton}
@@ -122,12 +89,7 @@ export default class emergencyModal extends React.Component {
                   <Text style={styles.confirmButtonText}>Confirmar</Text>
                   <Image
                     source={require("../../assets/SeguirWhite.png")}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      marginRight: 20,
-                      marginLeft: 10,
-                    }}
+                    style={styles.seguirImage}
                   />
                 </TouchableOpacity>
               </View>
@@ -142,7 +104,6 @@ export default class emergencyModal extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  //Estilos do modal
   modal: {
     flex: 1,
     backgroundColor: transparent,
@@ -173,6 +134,38 @@ const styles = StyleSheet.create({
     backgroundColor: iceWhite,
     borderRadius: 10,
   },
+  textTitle: {
+    color: errorRed,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  patientInfoArea: {
+    flexDirection: "row",
+    marginVertical: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  patientInfo: {
+    paddingLeft: 10,
+    justifyContent: "center",
+  },
+  notificationIcone: {
+    width: 60,
+    height: 60,
+  },
+  text: {
+    color: darkGray,
+    fontSize: 17,
+  },
+  localArea: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  localImage: {
+    width: 205,
+    height: 75,
+    marginBottom: 20,
+  },
   menuOverButton: {
     height: 60,
     width: "90%",
@@ -180,9 +173,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  text: {
-    color: darkGray,
-    fontSize: 17,
+  buttonArea: {
+    width: 100,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
   confirmButton: {
     width: 200,
@@ -196,5 +191,15 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     fontSize: 20,
     color: cleanWhite,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: baseGray,
+  },
+  seguirImage: {
+    width: 40,
+    height: 40,
+    marginRight: 20,
+    marginLeft: 10,
   },
 });
