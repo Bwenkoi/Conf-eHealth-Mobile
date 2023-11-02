@@ -115,20 +115,23 @@ export default function HealthScreen(props) {
       }
 
       var dateAux = new Date();
-      var dateformatted = formatDate(dateAux) + " - " + formatHour(dateAux);
+      var dateformatted = formatDate(dateAux);
+      var hourformatted = formatHour(dateAux);
 
       var dataExtractAux = dataExtract;
       var dataInvExtractAux = invertDataExtract;
 
       dataExtractAux.push({
-        timeStamp: dateformatted,
+        timeStamp: hourformatted,
+        date: dateformatted,
         value: healthData[iteration],
         situation: situation,
       });
 
       dataInvExtractAux.reverse();
       dataInvExtractAux.push({
-        timeStamp: dateformatted,
+        timeStamp: hourformatted,
+        date: dateformatted,
         value: healthData[iteration],
         situation: situation,
       });
@@ -208,7 +211,9 @@ export default function HealthScreen(props) {
 
     return (
       <View style={styles.listItem}>
-        <Text style={styles.darkText}>{item.timeStamp}</Text>
+        <Text style={styles.darkText}>
+          {item.date} - {item.timeStamp}
+        </Text>
         <Text style={styles.darkText}>{item.value}</Text>
         {situation}
       </View>
